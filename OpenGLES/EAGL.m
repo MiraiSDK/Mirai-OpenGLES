@@ -54,7 +54,9 @@ static EAGLContext *ctx = nil;
     if (self) {
         _API = api;
         _sharegroup = sharegroup;
-        
+        if (!_sharegroup) {
+            _sharegroup = [[EAGLSharegroup alloc] initWithAPI:api];
+        }
         _debugLabel = sharegroup.debugLabel;
     }
     return self;
