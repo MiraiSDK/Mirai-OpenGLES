@@ -7,6 +7,7 @@
 //
 
 #import "EAGL.h"
+#import <pthread.h>
 
 void EAGLGetVersion(unsigned int* major, unsigned int* minor)
 {
@@ -24,23 +25,29 @@ void EAGLGetVersion(unsigned int* major, unsigned int* minor)
 
 @implementation EAGLContext
 
-static EAGLContext *ctx = nil;
+void pthread_key_destructor_callback(void *value)
+{
+    EAGLContext *ctx = (__bridge_transfer EAGLContext *)(value);
+}
+static pthread_key_t key = 0;
+
+
++ (void)initialize
+{
+    pthread_key_create(&key, &pthread_key_destructor_callback);
+}
 
 + (BOOL)setCurrentContext:(EAGLContext *)context
 {
-    ctx = context;
-    return YES;
+    EAGLContext *prevContext = (__bridge_transfer EAGLContext *)(pthread_getspecific(key));
+    int r = pthread_setspecific(key, (__bridge_retained const void *)(context));
+    return (r == 0);
 }
 
 + (EAGLContext *)currentContext
 {
-    return ctx;
-}
-
-- (id)init
-{
-    // TODO:// what's iOS default?
-    return [self initWithAPI:kEAGLRenderingAPIOpenGLES1];
+    EAGLContext *c = (__bridge EAGLContext *)(pthread_getspecific(key));
+    return c;
 }
 
 - (id)initWithAPI:(EAGLRenderingAPI)api
