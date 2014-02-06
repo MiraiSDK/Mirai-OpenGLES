@@ -55,6 +55,10 @@ static pthread_key_t key = 0;
     
     
     EGLSurface surface = eglGetCurrentSurface(EGL_DRAW);
+    if (surface == EGL_NO_SURFACE) {
+        NSLog(@"can not get current surface");
+        return NO;
+    }
     
     BOOL success = eglMakeCurrent(context->_eglDisplay, surface, surface, context->_eglContext);
     if (!success) {
@@ -92,9 +96,19 @@ static pthread_key_t key = 0;
             EGL_NONE
         };
 
-        eglChooseConfig(_eglDisplay, attribs, &config, 1, &numConfigs);
+        EGLBoolean chooseSuccess = eglChooseConfig(_eglDisplay, attribs, &config, 1, &numConfigs);
+        if (!chooseSuccess) {
+            NSLog(@"choose config failed");
+        }
 
-        _eglContext = eglCreateContext(_eglDisplay, config, NULL, NULL);
+        const EGLint ctxAttribs[] = {
+            EGL_CONTEXT_CLIENT_VERSION, api,
+            EGL_NONE
+        };
+        _eglContext = eglCreateContext(_eglDisplay, config, NULL, ctxAttribs);
+        if (_eglContext == EGL_NO_CONTEXT) {
+            NSLog(@"EAGL create egl context failed");
+        }
         
         _sharegroup = sharegroup;
         if (!_sharegroup) {
