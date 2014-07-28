@@ -19,6 +19,9 @@ void EAGLGetVersion(unsigned int* major, unsigned int* minor)
     *minor = EAGL_MINOR_VERSION;
 }
 
+@interface EAGLSharegroup ()
+@property (nonatomic, weak) EAGLContext *context;
+@end
 @implementation EAGLSharegroup
 - (id)initWithAPI:(EAGLRenderingAPI)api
 {
@@ -30,6 +33,7 @@ void EAGLGetVersion(unsigned int* major, unsigned int* minor)
 @implementation EAGLContext {
     EGLContext *_eglContext;
     EGLDisplay *_eglDisplay;
+    EGLSurface *_eglSurface;
 }
 
 void pthread_key_destructor_callback(void *value)
@@ -46,6 +50,8 @@ static pthread_key_t key = 0;
 
 + (BOOL)setCurrentContext:(EAGLContext *)context
 {
+//    NSLog(@"%s",__PRETTY_FUNCTION__);
+    
     EAGLContext *prevContext = (__bridge_transfer EAGLContext *)(pthread_getspecific(key));
     int r = pthread_setspecific(key, (__bridge_retained const void *)(context));
 
@@ -53,13 +59,24 @@ static pthread_key_t key = 0;
         return NO;
     }
     
+    if (context == nil) {
+        bool result = eglMakeCurrent(EGL_NO_DISPLAY, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
+        return result;
+    }
     
-    EGLSurface surface = eglGetCurrentSurface(EGL_DRAW);
+    
+//    NSLog(@"[EAGLContext] get current surface");
+    EGLSurface surface = context->_eglSurface;
+    if (surface == EGL_NO_SURFACE) {
+        surface = eglGetCurrentSurface(EGL_DRAW);
+    }
+    
     if (surface == EGL_NO_SURFACE) {
         NSLog(@"can not get current surface");
         return NO;
     }
     
+//    NSLog(@"[EAGLContext] make current context");
     BOOL success = eglMakeCurrent(context->_eglDisplay, surface, surface, context->_eglContext);
     if (!success) {
         NSLog(@"Unable to eglMakeCurrent");
@@ -74,6 +91,9 @@ static pthread_key_t key = 0;
     return c;
 }
 
+
+static EAGLSharegroup *gDefaultShareGroup = nil;
+
 - (id)initWithAPI:(EAGLRenderingAPI)api
 {
     return [self initWithAPI:api sharegroup:nil];
@@ -86,6 +106,10 @@ static pthread_key_t key = 0;
         _API = api;
         
         _eglDisplay = eglGetCurrentDisplay();
+        if (_eglDisplay == EGL_NO_DISPLAY) {
+            _eglDisplay = eglGetDisplay(EGL_DEFAULT_DISPLAY);
+        }
+        
         EGLConfig config;
         EGLint numConfigs;
         const EGLint attribs[] = {
@@ -100,19 +124,48 @@ static pthread_key_t key = 0;
         if (!chooseSuccess) {
             NSLog(@"choose config failed");
         }
+        
+        EGLSurface surface = eglGetCurrentSurface(EGL_DRAW);
+        if (surface == EGL_NO_SURFACE) {
+            surface = eglCreatePbufferSurface(_eglDisplay, config, NULL);
+            
+            if (surface == EGL_NO_SURFACE) {
+                EGLint err = eglGetError();
+
+                NSLog(@"%s create surface failed, error:%d",__PRETTY_FUNCTION__,err);
+                
+            }
+            
+            _eglSurface = surface;
+        }
 
         const EGLint ctxAttribs[] = {
             EGL_CONTEXT_CLIENT_VERSION, api,
             EGL_NONE
         };
-        _eglContext = eglCreateContext(_eglDisplay, config, NULL, ctxAttribs);
+        
+        EGLContext *sharedContext = EGL_NO_CONTEXT;
+        if (sharegroup) {
+            sharedContext = sharegroup.context->_eglContext;
+        } else if (gDefaultShareGroup) {
+            NSLog(@"use DefaultShareGroup");
+            sharedContext = gDefaultShareGroup.context->_eglContext;
+        }
+        
+        _eglContext = eglCreateContext(_eglDisplay, config, sharedContext, ctxAttribs);
         if (_eglContext == EGL_NO_CONTEXT) {
             NSLog(@"EAGL create egl context failed");
         }
         
         _sharegroup = sharegroup;
         if (!_sharegroup) {
-            _sharegroup = [[EAGLSharegroup alloc] initWithAPI:api];
+            if (gDefaultShareGroup) {
+                _sharegroup = gDefaultShareGroup;
+            } else {
+                _sharegroup = [[EAGLSharegroup alloc] initWithAPI:api];
+                _sharegroup.context = self;
+                gDefaultShareGroup = _sharegroup;
+            }
         }
         _debugLabel = sharegroup.debugLabel;
     }
@@ -122,7 +175,12 @@ static pthread_key_t key = 0;
 - (void)dealloc
 {
     if (_eglContext != EGL_NO_CONTEXT) {
+//        NSLog(@"[EAGLContext]destory egl context");
         eglDestroyContext(_eglDisplay, _eglContext);
+    }
+    
+    if (_eglSurface != EGL_NO_SURFACE) {
+        eglDestroySurface(_eglDisplay, _eglSurface);
     }
 }
 
