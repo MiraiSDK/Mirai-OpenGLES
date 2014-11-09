@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4332B2021A0E0468005C067B /* EAGL+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = 4332B2011A0E008A005C067B /* EAGL+Private.h */; settings = {ATTRIBUTES = (Private, ); }; };
+		4332B2031A0E0639005C067B /* EAGL+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = 4332B2011A0E008A005C067B /* EAGL+Private.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		43B942CA18608F7F005EB256 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 43B942C818608F7F005EB256 /* InfoPlist.strings */; };
 		43B942D518608F7F005EB256 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 43B942D418608F7F005EB256 /* XCTest.framework */; };
 		43B942D918608F7F005EB256 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 43B942BC18608F7F005EB256 /* OpenGLES.framework */; };
@@ -37,6 +39,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		4332B2011A0E008A005C067B /* EAGL+Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "EAGL+Private.h"; sourceTree = "<group>"; };
 		43B942BC18608F7F005EB256 /* OpenGLES.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = OpenGLES.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		43B942C218608F7F005EB256 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		43B942C718608F7F005EB256 /* OpenGLES-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "OpenGLES-Info.plist"; sourceTree = "<group>"; };
@@ -128,6 +131,7 @@
 			children = (
 				43B942FA18609225005EB256 /* EAGL.h */,
 				43B942FB18609225005EB256 /* EAGL.m */,
+				4332B2011A0E008A005C067B /* EAGL+Private.h */,
 				43B943001860923C005EB256 /* EAGLDrawable.h */,
 				43B943011860923C005EB256 /* EAGLDrawable.m */,
 				43B942C618608F7F005EB256 /* Supporting Files */,
@@ -181,6 +185,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				43B942FC18609225005EB256 /* EAGL.h in Headers */,
+				4332B2031A0E0639005C067B /* EAGL+Private.h in Headers */,
 				43B943021860923C005EB256 /* EAGLDrawable.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -190,6 +195,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				43B942FD18609225005EB256 /* EAGL.h in Headers */,
+				4332B2021A0E0468005C067B /* EAGL+Private.h in Headers */,
 				43B943031860923C005EB256 /* EAGLDrawable.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
