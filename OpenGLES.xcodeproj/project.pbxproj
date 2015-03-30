@@ -40,6 +40,8 @@
 
 /* Begin PBXFileReference section */
 		4332B2011A0E008A005C067B /* EAGL+Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "EAGL+Private.h"; sourceTree = "<group>"; };
+		436060DE1AC92F3300303792 /* Android-arm.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "Android-arm.xcconfig"; sourceTree = "<group>"; };
+		436060DF1AC92F3300303792 /* Android-x86.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "Android-x86.xcconfig"; sourceTree = "<group>"; };
 		43B942BC18608F7F005EB256 /* OpenGLES.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = OpenGLES.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		43B942C218608F7F005EB256 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		43B942C718608F7F005EB256 /* OpenGLES-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "OpenGLES-Info.plist"; sourceTree = "<group>"; };
@@ -173,6 +175,8 @@
 			isa = PBXGroup;
 			children = (
 				43B942F818609049005EB256 /* Android.xcconfig */,
+				436060DE1AC92F3300303792 /* Android-arm.xcconfig */,
+				436060DF1AC92F3300303792 /* Android-x86.xcconfig */,
 			);
 			path = xcconfig;
 			sourceTree = "<group>";

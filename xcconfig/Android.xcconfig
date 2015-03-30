@@ -12,11 +12,11 @@ SDK_LIB_PATH=$(SDK_ROOT)/usr/lib
 DEPLOYMENT_LOCATION = YES
 DSTROOT = /
 INSTALL_PATH = $(SDK_ROOT)/System/Library/Frameworks/
-
-ARCHFLAGS=-march=armv7-a -mfloat-abi=softfp -mfpu=vfpv3-d16
-ARCHLDFLAGS=-march=armv7-a -Wl,--fix-cortex-a8
-
-OTHER_LDFLAGS= $(ARCHLDFLAGS) -shared $(inherited) -lEGL -lgnustl_shared -lobjc
-OTHER_CFLAGS= $(inherited) $(ARCHFLAGS) -fblocks
 LD_DEPENDENCY_INFO_FILE=
+
+BASE_CFLAGS= -fblocks
+BASE_LDFLAGS= -shared -lEGL -lgnustl_shared -lobjc
+
+OTHER_CFLAGS = $(inherited) $(BASE_CFLAGS)
+OTHER_LDFLAGS = $(inherited) $(BASE_LDFLAGS)
 
