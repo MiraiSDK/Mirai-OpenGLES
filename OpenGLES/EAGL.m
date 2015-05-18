@@ -66,11 +66,7 @@ static pthread_key_t key = 0;
     
     EGLSurface surface = context->_eglSurface;
     if (surface == EGL_NO_SURFACE) {
-        surface = eglGetCurrentSurface(EGL_DRAW);
-    }
-    
-    if (surface == EGL_NO_SURFACE) {
-        NSLog(@"can not get current surface");
+        [NSException raise:@"EGL_NO_SURFACE" format:@"context has no surface"];
         return NO;
     }
     
@@ -122,7 +118,7 @@ static pthread_key_t key = 0;
             NSLog(@"choose config failed");
         }
         
-        EGLSurface surface = eglGetCurrentSurface(EGL_DRAW);
+        EGLSurface surface = EGL_NO_SURFACE;
         if (surface == EGL_NO_SURFACE) {
             NSLog(@"create pbuffer surface..");
             const EGLint pbAttribs[] = {
@@ -139,8 +135,8 @@ static pthread_key_t key = 0;
                 
             }
             
-            _eglSurface = surface;
         }
+        _eglSurface = surface;
 
         const EGLint ctxAttribs[] = {
             EGL_CONTEXT_CLIENT_VERSION, api,
@@ -189,6 +185,7 @@ static pthread_key_t key = 0;
 }
 - (void)dealloc
 {
+    NSLog(@"%s",__PRETTY_FUNCTION__);
     if (_eglContext != EGL_NO_CONTEXT) {
         eglDestroyContext(_eglDisplay, _eglContext);
     }
