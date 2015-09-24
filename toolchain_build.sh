@@ -8,7 +8,8 @@ checkError()
     fi
 }
 
-if [ ! -f $MIRAI_SDK_PREFIX/lib/libOpenGLES.so ]; then
+if [ ! -f $MIRAI_SDK_PREFIX/lib/libOpenGLES.so ] || 
+	[ "$OPTION_REBUILD_COCOA" == "yes" ]; then
 	echo "build OpenGLES..."
 	
 	pushd $MIRAI_PROJECT_ROOT_PATH/Mirai-OpenGLES
