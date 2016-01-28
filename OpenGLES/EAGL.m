@@ -145,7 +145,10 @@ static pthread_key_t key = 0;
         
         EGLContext *sharedContext = EGL_NO_CONTEXT;
         if (sharegroup) {
-            sharedContext = sharegroup.context->_eglContext;
+            EAGLContext *sharegroupContent = sharegroup.context;
+            if (sharegroupContent) {
+                sharedContext = sharegroupContent->_eglContext;
+            }
         }
         
         _eglContext = eglCreateContext(_eglDisplay, config, sharedContext, ctxAttribs);
