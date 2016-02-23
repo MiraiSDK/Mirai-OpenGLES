@@ -13,6 +13,7 @@ DEPLOYMENT_LOCATION = YES
 DSTROOT = /
 INSTALL_PATH = $(SDK_ROOT)/System/Library/Frameworks/
 LD_DEPENDENCY_INFO_FILE=
+DEBUG_INFORMATION_FORMAT = dwarf
 
 BASE_CFLAGS= -fblocks
 BASE_LDFLAGS= -shared -lEGL -lgnustl_shared -lobjc
